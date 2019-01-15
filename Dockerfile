@@ -41,7 +41,7 @@ RUN cp -r ~/.oh-my-zsh /home/node; \
     chsh -s /bin/zsh;
 
 # Angular
-RUN npm install -g @angular/cli
+RUN npm install -g @angular/cli pm2
 
 USER node
 

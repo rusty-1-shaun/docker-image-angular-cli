@@ -12,7 +12,8 @@ RUN apt-get install -y \
     apt-transport-https \
     lsb-release \
     software-properties-common \
-    dirmngr
+    dirmngr \
+    net-tools
 
 RUN AZ_REPO=$(lsb_release -cs); echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | \
     tee /etc/apt/sources.list.d/azure-cli.list
@@ -28,7 +29,8 @@ RUN apt-get install -y \
     curl \
     vim \
     zsh \
-    azure-cli
+    azure-cli \
+    nginx
 
 RUN git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh; \
     cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc

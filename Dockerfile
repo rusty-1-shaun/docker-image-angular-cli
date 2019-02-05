@@ -2,6 +2,7 @@ FROM node:10.10
 LABEL maintainer="Rusty <rusty.shaun@gmail.com>"
 LABEL version="1.0.0"
 
+
 # Mount projects as /home/node/site
 RUN mkdir -p /home/node/site
 
@@ -22,15 +23,18 @@ RUN apt-key --keyring /etc/apt/trusted.gpg.d/Microsoft.gpg adv \
      --keyserver packages.microsoft.com \
      --recv-keys BC528686B50D79E339D3721CEB3E94ADBE1229CF
 
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - & \
+    echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list
 
 RUN apt-get update -y
-RUN apt-get install -y \
+RUN apt-get install -y --force-yes \
     zip \
     curl \
     vim \
     zsh \
     azure-cli \
-    nginx
+    nginx \
+    google-chrome-stable
 
 RUN git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh; \
     cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
@@ -42,13 +46,22 @@ RUN cp -r ~/.oh-my-zsh /home/node; \
     chown -R node:node /home/node/site; \
     chsh -s /bin/zsh;
 
-# Angular
-RUN npm install -g @angular/cli pm2
 
-USER node
+# See: https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally
+# RUN mkdir ~/.npm-global & \
+#     npm config set prefix '~/.npm-global'
+
+
+# Angular
+RUN npm install -g @angular/cli pm2 hammerjs
+
+RUN npm install node-sass
 
 WORKDIR /home/node/site
 
+USER node
+ENV CHROME_BIN=/usr/bin/google-chrome
+#ENV NPM_CONFIG_PREFIX=~/.npm-global
 
 ENTRYPOINT ["/bin/zsh"]
 
